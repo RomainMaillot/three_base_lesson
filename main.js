@@ -25,8 +25,8 @@ import loading from "./scenes/loading.js";
 
 // --- Cours 3 scenes ---
 // lightsAndTextures();
-importModel();
+// importModel();
 
 // --- Cours 4 scenes ---
 // performance();
-// loading();
+loading();
