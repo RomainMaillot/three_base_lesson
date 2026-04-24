@@ -1,0 +1,21 @@
+{
+  "name": "first_project",
+  "version": "1.0.0",
+  "description": "The first project for Three.js journey",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "lil-gui": "^0.21.0",
+    "motion": "^12.35.0",
+    "stats.js": "^0.17.0",
+    "three": "^0.183.1",
+    "vite": "^7.3.1"
+  }
+}
