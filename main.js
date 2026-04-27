@@ -12,6 +12,10 @@ import importModel from "./scenes/importModel.js";
 import performance from "./scenes/performance.js";
 import loading from "./scenes/loading.js";
 
+/**
+ * Keep only one scene call active at a time.
+ * Imports alone do not run a scene: only the function call does.
+ */
 // --- Cours 1 scenes ---
 // firstScene();
 // secondScene();
@@ -29,4 +33,5 @@ import loading from "./scenes/loading.js";
 
 // --- Cours 4 scenes ---
 // performance();
+// Active scene for this demo:
 loading();

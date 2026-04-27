@@ -4,6 +4,9 @@ import resize from "../helpers/resize.js";
 
 const timer = new THREE.Timer();
 
+/**
+ * Directional light demo with GUI controls and helper visualization.
+ */
 export default function lights() {
   const gui = new GUI();
 

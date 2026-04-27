@@ -57,9 +57,12 @@ export default function importModel() {
 
   // --- Load glTF model ---
   const gltfLoader = new GLTFLoader();
+  // modelGroup is available immediately, even before the file is loaded.
+  // This lets us animate/scale/rotate a stable parent object from frame 1.
   const modelGroup = new THREE.Group();
   scene.add(modelGroup);
 
+  // Async step: this callback runs later, once the .glb has finished loading.
   gltfLoader.load("./assets/models/damaged_helmet.glb", (gltf) => {
     const model = gltf.scene;
     modelGroup.add(model);

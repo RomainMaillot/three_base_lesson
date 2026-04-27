@@ -6,6 +6,9 @@ import resize from "../helpers/resize.js";
 
 const timer = new THREE.Timer();
 
+/**
+ * Look-at demo: choose a target in GUI and animate camera focus toward it.
+ */
 export default function animationLookAt() {
   const canvas = document.querySelector(".webgl");
   const scene = new THREE.Scene();
@@ -32,7 +35,7 @@ export default function animationLookAt() {
   cube2.position.z = 5;
   scene.add(cube2);
 
-  // add option to look at the cubes
+  // GUI stores selected object, then we animate an intermediate target object.
   const currentTarget = { lookAtObject: cube };
   const lookTarget = new THREE.Object3D();
   gui.add(currentTarget, "lookAtObject", { cube: cube, cube2: cube2 });

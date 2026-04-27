@@ -109,6 +109,7 @@ function loadFile(fileLoader, url) {
  */
 export default async function loading() {
   const badge = getOrCreateLoadingBadge();
+  // LoadingManager tracks loader progress events globally for attached loaders.
   const manager = new THREE.LoadingManager();
   const textureLoader = new THREE.TextureLoader(manager);
   const gltfLoader = new GLTFLoader(manager);
@@ -137,6 +138,8 @@ export default async function loading() {
     badge.textContent = `Error loading: ${url}`;
   };
 
+  // Promise lists define completion logic used by Promise.all below.
+  // LoadingManager is used in parallel only to provide progress callbacks.
   const texturePromises = ASSET_MANIFEST.textures.map(async (url) => {
     const texture = await loadTexture(textureLoader, url);
     loadedAssets.textures[url] = texture;
@@ -153,7 +156,10 @@ export default async function loading() {
   });
 
   try {
+    // The scene starts only when every asset promise has resolved.
     await Promise.all([...texturePromises, ...modelPromises, ...filePromises]);
+    // onLoad may already have fired by this point; we keep explicit "Ready"
+    // updates here so the final UI state is deterministic for students.
     manager.onLoad = () => {
       badge.textContent = "Ready";
     };

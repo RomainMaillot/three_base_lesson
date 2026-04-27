@@ -7,6 +7,9 @@ import resize from "../helpers/resize.js";
 
 const timer = new THREE.Timer();
 
+/**
+ * Controls demo combining OrbitControls and TransformControls on one cube.
+ */
 export default function animationScene() {
   const gui = new GUI();
   const canvas = document.querySelector(".webgl");
@@ -53,10 +56,10 @@ export default function animationScene() {
   scene.add(transformControls.getHelper());
 
   // Prevent orbit controls from being moved when transform controls is active
-  transformControls.addEventListener("mouseDown", (event) => {
+  transformControls.addEventListener("mouseDown", () => {
     controls.enabled = false;
   });
-  transformControls.addEventListener("mouseUp", (event) => {
+  transformControls.addEventListener("mouseUp", () => {
     controls.enabled = true;
   });
 

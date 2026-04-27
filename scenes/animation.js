@@ -3,6 +3,9 @@ import resize from "../helpers/resize.js";
 
 const timer = new THREE.Timer();
 
+/**
+ * Animation basics demo using a shared requestAnimationFrame loop.
+ */
 export default function animationScene() {
   const canvas = document.querySelector(".webgl");
   const scene = new THREE.Scene();
@@ -45,7 +48,7 @@ const animate = (cube, scene, camera, renderer) => {
   //   cube.position.x = Math.cos(elapsedTime);
   //   cube.position.y = Math.sin(elapsedTime);
 
-  // Show example of animation with camera
+  // Orbit camera around the cube using cosine/sine over elapsed time.
   camera.position.x = Math.cos(elapsedTime);
   camera.position.y = Math.sin(elapsedTime);
   camera.lookAt(cube.position);

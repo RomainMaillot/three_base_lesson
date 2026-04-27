@@ -1,5 +1,8 @@
 import * as THREE from "three";
 
+/**
+ * Minimal Three.js scene: one cube, one camera, one renderer.
+ */
 export default function firstScene() {
   const canvas = document.querySelector(".webgl");
   const scene = new THREE.Scene();

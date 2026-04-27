@@ -1,3 +1,6 @@
+/**
+ * Keeps camera projection and renderer size in sync with browser resize events.
+ */
 export default function resize(camera, renderer) {
   window.addEventListener("resize", () => {
     // Update camera

@@ -1,15 +1,18 @@
 import * as THREE from "three";
-import GUI from "lil-gui";
 import { animate as motionAnimate } from "motion";
 
 import resize from "../helpers/resize.js";
 
 const timer = new THREE.Timer();
 
-export default function animationLookAt() {
+/**
+ * Navigation scene:
+ * - click an object to change the camera look target smoothly
+ * - move the mouse to add a subtle orbit-like offset
+ */
+export default function navigation() {
   const canvas = document.querySelector(".webgl");
   const scene = new THREE.Scene();
-  const gui = new GUI();
 
   const camera = new THREE.PerspectiveCamera(
     75,
@@ -32,34 +35,17 @@ export default function animationLookAt() {
   cube2.position.z = 5;
   scene.add(cube2);
 
-  // Smoothed rotation offsets, updated independently from the render loop
+  // Smoothed mouse offsets, updated independently from the render loop.
   const smoothedRotation = { x: 0, y: 0 };
 
-  // add option to look at the cubes
-  const currentTarget = { lookAtObject: cube };
+  // This object is the single point the camera always looks at.
+  // We animate its position toward the clicked object's position.
   const lookTarget = new THREE.Object3D();
 
-  //   gui.add(currentTarget, "lookAtObject", { cube: cube, cube2: cube2 });
-  //   gui.onChange((value) => {
-  //     // Reset mouse offsets so the new lookAt orientation starts clean
-  //     smoothedRotation.x = 0;
-  //     smoothedRotation.y = 0;
-
-  //     motionAnimate(
-  //       lookTarget.position,
-  //       {
-  //         x: value.value.position.x,
-  //         y: value.value.position.y,
-  //         z: value.value.position.z,
-  //       },
-  //       { duration: 1.5, ease: "easeInOut" },
-  //     );
-  //   });
-
-  // raycaster to look at the cubes
+  // Raycaster lets us convert a 2D click into a 3D object hit test.
   const raycaster = new THREE.Raycaster();
 
-  canvas.addEventListener("click", (event) => {
+  canvas.addEventListener("click", () => {
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
@@ -72,18 +58,17 @@ export default function animationLookAt() {
         },
         { duration: 1.5, ease: "easeInOut" },
       );
-      currentTarget.lookAtObject = intersects[0].object;
     }
   });
 
-  // move camera with mouse
+  // Mouse is stored in Normalized Device Coordinates (range: -1 to 1).
   const mouse = new THREE.Vector2();
   canvas.addEventListener("mousemove", (event) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
   });
 
-  // Add skybox
+  // Skybox gives visual depth and context for camera motion.
   const loader = new THREE.TextureLoader();
   const skybox = loader.load("./assets/equirectangularmaps/skybox.jpg", () => {
     skybox.mapping = THREE.EquirectangularReflectionMapping;
@@ -97,6 +82,9 @@ export default function animationLookAt() {
 
   resize(camera, renderer);
 
+  // Two loops run in parallel:
+  // - startCameraSmoothing: slowly moves offsets toward mouse values
+  // - animate: applies those offsets and renders each frame
   startCameraSmoothing(smoothedRotation, mouse);
   animate(scene, camera, renderer, lookTarget, smoothedRotation);
 }
@@ -110,7 +98,7 @@ const _rightAxis = new THREE.Vector3();
 const _worldUp = new THREE.Vector3(0, 1, 0);
 
 /**
- * Render loop — applies mouse offsets using quaternions so that
+ * Render loop — applies mouse offsets using quaternions so that:
  * yaw is always around the world up axis and pitch is always
  * around the camera's local right axis, regardless of where the
  * camera is currently looking.
@@ -148,10 +136,10 @@ const startCameraSmoothing = (smoothedRotation, mouse) => {
   const smoothingFactor = 0.02;
 
   const tick = () => {
-    smoothedRotation.x = lerp(smoothedRotation.x, mouse.y * 1, smoothingFactor);
+    smoothedRotation.x = lerp(smoothedRotation.x, mouse.y, smoothingFactor);
     smoothedRotation.y = lerp(
       smoothedRotation.y,
-      -mouse.x * 1,
+      -mouse.x,
       smoothingFactor,
     );
     requestAnimationFrame(tick);

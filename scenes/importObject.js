@@ -5,6 +5,9 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const timer = new THREE.Timer();
 
+/**
+ * glTF import basics with orbit controls and simple light setup.
+ */
 export default function importObject() {
   const canvas = document.querySelector(".webgl");
   const scene = new THREE.Scene();
@@ -22,6 +25,7 @@ export default function importObject() {
 
   const loader = new GLTFLoader();
   const bookshelf = new THREE.Group();
+  // Async: model becomes visible once loading callback resolves.
   loader.load("./assets/models/bookshelf.glb", (object) => {
     bookshelf.add(object.scene);
     scene.add(bookshelf);

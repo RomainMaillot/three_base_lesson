@@ -1,5 +1,8 @@
 import * as THREE from "three";
 
+/**
+ * Transform basics demo: position, rotation, scale, grouping, and camera lookAt.
+ */
 export default function secondScene() {
   const canvas = document.querySelector(".webgl");
   const scene = new THREE.Scene();

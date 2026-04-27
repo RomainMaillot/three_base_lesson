@@ -5,6 +5,11 @@ import resize from "../helpers/resize.js";
 
 const timer = new THREE.Timer();
 
+/**
+ * Raycaster demo:
+ * - hover changes color/cursor
+ * - click toggles cube scale animation
+ */
 export default function raycaster() {
   const canvas = document.querySelector(".webgl");
   const scene = new THREE.Scene();
@@ -26,7 +31,8 @@ export default function raycaster() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.render(scene, camera);
 
-  const dragControls = new DragControls([cube], camera, canvas);
+  // Keep drag controls enabled so students can test drag + raycast together.
+  new DragControls([cube], camera, canvas);
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();

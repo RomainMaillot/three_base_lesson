@@ -25,7 +25,8 @@ function logRendererInfo(renderer) {
  * Follow the GUI checkboxes to toggle each texture layer on/off.
  */
 export default function performance() {
-  const infoLogState = { lastLogMs: 0 };
+  // Stores when we last printed renderer stats to avoid log spam every frame.
+  const rendererInfoLogState = { lastLogMs: 0 };
   const statsInstance = stats();
   const canvas = document.querySelector(".webgl");
   const scene = new THREE.Scene();
@@ -164,6 +165,7 @@ export default function performance() {
     .name("1. Color (map)")
     .onChange((enabled) => {
       material.map = enabled ? colorTexture : null;
+      // Required when enabling/disabling texture slots at runtime.
       material.needsUpdate = true;
     });
 
@@ -172,6 +174,7 @@ export default function performance() {
     .name("2. Normal Map")
     .onChange((enabled) => {
       material.normalMap = enabled ? normalTexture : null;
+      // Required when enabling/disabling texture slots at runtime.
       material.needsUpdate = true;
     });
 
@@ -180,6 +183,7 @@ export default function performance() {
     .name("3. Roughness Map")
     .onChange((enabled) => {
       material.roughnessMap = enabled ? roughnessTexture : null;
+      // Required when enabling/disabling texture slots at runtime.
       material.needsUpdate = true;
     });
 
@@ -188,6 +192,7 @@ export default function performance() {
     .name("4. AO Map")
     .onChange((enabled) => {
       material.aoMap = enabled ? aoTexture : null;
+      // Required when enabling/disabling texture slots at runtime.
       material.needsUpdate = true;
     });
 
@@ -207,6 +212,7 @@ export default function performance() {
     .name("1. Color (map)")
     .onChange((enabled) => {
       grateMaterial.map = enabled ? grateColorTexture : null;
+      // Required when enabling/disabling texture slots at runtime.
       grateMaterial.needsUpdate = true;
     });
 
@@ -215,6 +221,7 @@ export default function performance() {
     .name("2. Alpha Map")
     .onChange((enabled) => {
       grateMaterial.alphaMap = enabled ? grateAlphaTexture : null;
+      // Required when enabling/disabling texture slots at runtime.
       grateMaterial.needsUpdate = true;
     });
 
@@ -223,6 +230,7 @@ export default function performance() {
     .name("3. Normal Map")
     .onChange((enabled) => {
       grateMaterial.normalMap = enabled ? grateNormalTexture : null;
+      // Required when enabling/disabling texture slots at runtime.
       grateMaterial.needsUpdate = true;
     });
   // Button to toggle rotation of the plane
@@ -258,7 +266,7 @@ export default function performance() {
     plane,
     directionalLightHelper,
     statsInstance,
-    infoLogState,
+    rendererInfoLogState,
   );
 }
 
@@ -274,7 +282,7 @@ const animate = (
   plane,
   lightHelper,
   statsInstance,
-  infoLogState,
+  rendererInfoLogState,
 ) => {
   statsInstance.begin();
   timer.update();
@@ -291,9 +299,10 @@ const animate = (
   renderer.render(scene, camera);
 
   const nowMs = window.performance.now();
-  if (nowMs - infoLogState.lastLogMs >= INFO_LOG_INTERVAL_MS) {
+  // Print renderer internals every 2 seconds: useful for teaching performance basics.
+  if (nowMs - rendererInfoLogState.lastLogMs >= INFO_LOG_INTERVAL_MS) {
     logRendererInfo(renderer);
-    infoLogState.lastLogMs = nowMs;
+    rendererInfoLogState.lastLogMs = nowMs;
   }
 
   statsInstance.end();
@@ -308,7 +317,7 @@ const animate = (
       plane,
       lightHelper,
       statsInstance,
-      infoLogState,
+      rendererInfoLogState,
     ),
   );
 };
